@@ -12,7 +12,7 @@ Pass rules:
 - FWD-12: below 10 ms per single evaluation, gated only on the reference machine (`REFERENCE_CPU`, the CPU model
   string of /proc/cpuinfo; "" = no reference machine named yet, the rule is then reported, not gated).
 - On any machine: every time at most 2 x the stored baseline of this machine. The baselines are in
-  tests/regression/speed_baselines.json, keyed by "<hostname> | <CPU model> | <cores>"; the first run on a new
+  tests/regression/speed_baselines.json, keyed by "<CPU model> | <cores>"; the first run on a new
   machine writes its entry and passes with a note.
 - ENG-6: peak memory (VmHWM of each worker process, polled from the parent; cross-checked with getrusage of the
   reaped children) below 1 GB per worker.
@@ -24,7 +24,6 @@ import json
 import os
 import platform
 import resource
-import socket
 import threading
 import time
 from pathlib import Path
@@ -59,7 +58,7 @@ def cpu_model() -> str:
 
 
 def machine_key() -> str:
-    return f"{socket.gethostname()} | {cpu_model()} | {os.cpu_count()}"
+    return f"{cpu_model()} | {os.cpu_count()}"
 
 
 def _config(data: str, kind: str, search_block: str = "") -> str:

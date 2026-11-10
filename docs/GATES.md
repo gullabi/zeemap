@@ -66,7 +66,7 @@ MAGWD, and contributors do not read their source while writing zeemap code. The 
 ## Gate C: release, or fits for a publication
 
 Version 0.1.0 was released on gates A and B only, because tiers 2 and 3 are not built yet (decision #35); the release
-rule below applies once they exist.
+rule below applies once they exist. The tag and the GitHub release are made by CI (CONTRIBUTING.md, "Releasing").
 
 - **Release.** Gate B passes, tier 2 passes on the commit being tagged, and tier 3 passes on it (for V15 its part
   V15a; V15b is run and its result reported, decision #24). A tier-3 check may be skipped only when nothing it depends

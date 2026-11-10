@@ -1,6 +1,6 @@
 # What zeemap must do (specification)
 
-**Status:** describes zeemap 0.1.0; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
+**Status:** describes the current version of zeemap; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
 **Who this is for:** anyone who will build, review or use zeemap, including AI coding agents.
 **You need to know:** what a spectrum, a chi-squared fit and a magnetic dipole are. Every other term is explained where
 it first appears, and in [GLOSSARY.md](GLOSSARY.md).

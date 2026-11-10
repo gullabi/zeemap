@@ -6,6 +6,8 @@ or output formats).
 
 ## Unreleased
 
+- Releases are tagged and published by CI when a new version reaches `main` (CONTRIBUTING.md, "Releasing").
+
 ## 0.1.0 - 2026-11-08
 
 The first public version.
@@ -20,7 +22,7 @@ The first public version.
 - **Uncertainty:** profile likelihoods per family, MCMC inside each mode (`--mcmc`), run-time convergence checks,
   refits with changed assumptions (systematics) reported apart from the error bars.
 - **Commands:** `fit`, `eval`, `inject`.
-- **Tests:** more than 500 tier-1 checks on synthetic data, run on every push and pull request. Of the checks on real
+- **Tests:** more than 450 tier-1 checks on synthetic data, run on every push and pull request. Of the checks on real
   libraries (tiers 2 and 3) only the speed check V12 is built so far.
 - Checkpoints are loaded with a restricted unpickler that accepts only zeemap's checkpoint classes and numpy arrays
   (SECURITY.md).

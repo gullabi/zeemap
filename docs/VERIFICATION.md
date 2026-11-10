@@ -1,6 +1,6 @@
 # How we know zeemap works (verification loops)
 
-**Status:** describes zeemap 0.1.0; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
+**Status:** describes the current version of zeemap; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
 **Who this is for:** anyone who changes the code, reviews a change, or wants to trust a result.
 **What you will know afterwards:** which checks exist, what each one proves, its pass rule, and when it runs.
 **Words:** see [GLOSSARY.md](GLOSSARY.md). The requirements are in [SPEC.md](SPEC.md). "Check" and "loop" mean the

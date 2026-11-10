@@ -1,6 +1,6 @@
 # File formats
 
-**Status:** describes zeemap 0.1.0; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
+**Status:** describes the current version of zeemap; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
 **Who this is for:** anyone preparing a library or observations for zeemap, or reading its outputs.
 **What you will know afterwards:** the exact layout of every file zeemap reads, and of its main outputs.
 

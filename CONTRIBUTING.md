@@ -59,6 +59,15 @@ Someone other than you reviews the change, and a maintainer merges it. For chang
 forward model, library reading, likelihood, search, uncertainty, defaults), a maintainer also runs tier 2 on real data
 before merging. The full rules are in [docs/GATES.md](docs/GATES.md).
 
+## Releasing (maintainers)
+
+1. Open a pull request that sets the new version in `src/zeemap/__init__.py` (the only place it is written) and turns
+   the "Unreleased" section of [CHANGELOG.md](CHANGELOG.md) into `## X.Y.Z - YYYY-MM-DD`, with a new empty
+   "Unreleased" above it.
+2. Merge it. When tier 1 passes on `main`, CI tags the commit `vX.Y.Z` and publishes a GitHub release with that
+   CHANGELOG section as its notes. Nothing else is done by hand; a merge that does not change the version releases
+   nothing.
+
 ## Never
 
 - **Copy or translate code from other fitting programs, Numerical Recipes or MAGWD, or read their source while writing

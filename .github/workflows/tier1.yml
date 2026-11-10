@@ -22,3 +22,24 @@ jobs:
           .venv/bin/python -c "import zeemap; print(zeemap.__version__)"
       - name: Tier 1
         run: tools/check.sh 1
+  # A push to main whose version (src/zeemap/__init__.py) has no release yet gets the tag v<version> and a GitHub
+  # release with that version's CHANGELOG.md section as notes, after tier 1 passed (CONTRIBUTING.md, "Releasing").
+  release:
+    needs: tier1
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Tag and release a new version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          v=$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' src/zeemap/__init__.py)
+          if gh release view "v$v" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then echo "v$v is released"; exit 0; fi
+          awk -v h="## $v " 'index($0, h) == 1 {f = 1; next} /^## / && f {exit} f' CHANGELOG.md > notes.md
+          grep -q . notes.md || { echo "CHANGELOG.md has no section '## $v - <date>'" >&2; exit 1; }
+          gh release create "v$v" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "zeemap $v" --notes-file notes.md

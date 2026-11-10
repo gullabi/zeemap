@@ -36,7 +36,7 @@ looking:
   bars, never added into them.
 - **It is reproducible.** Every fit writes its configuration, versions, seed and input checksums to `run.json`; fits
   resume from checkpoints; the same seed gives the same result.
-- **It is tested.** More than 500 checks run on every change: known answers, symmetries, injection and recovery of
+- **It is tested.** More than 450 checks run on every change: known answers, symmetries, injection and recovery of
   synthetic stars, MCMC tests ([docs/VERIFICATION.md](docs/VERIFICATION.md)). The long calibration and
   search-completeness checks are not built yet, so the report marks its intervals as uncalibrated.
 

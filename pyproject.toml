@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zeemap"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Magnetic field geometries of white dwarfs from phase-resolved spectra and circular polarisation"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -42,6 +42,9 @@ dev = [
 
 [project.scripts]
 zeemap = "zeemap.cli:main"
+
+[tool.hatch.version]
+path = "src/zeemap/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/zeemap"]

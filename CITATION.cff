@@ -6,7 +6,6 @@ authors:
   - family-names: "Külebi"
     given-names: "Baybars"
   - name: "the zeemap contributors"
-version: "0.1.0"
 license: BSD-3-Clause
 repository-code: "https://github.com/gullabi/zeemap"
 keywords:

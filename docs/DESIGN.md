@@ -1,6 +1,6 @@
 # How zeemap is built (design)
 
-**Status:** describes zeemap 0.1.0; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
+**Status:** describes the current version of zeemap; the history of its decisions is in [DECISIONS.md](DECISIONS.md).
 **Who this is for:** whoever writes the code, person or agent, and reviewers.
 **What you will know afterwards:** the parts of the program, how they talk to each other, the formulas and
 algorithms with their default settings, and why each choice was made. *What* the program must do is in

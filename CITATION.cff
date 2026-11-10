@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use zeemap in your research, please cite it as below."
+title: "zeemap: magnetic field geometries of white dwarfs from phase-resolved spectropolarimetry"
+type: software
+authors:
+  - family-names: "Külebi"
+    given-names: "Baybars"
+  - name: "the zeemap contributors"
+version: "0.1.0"
+license: BSD-3-Clause
+repository-code: "https://github.com/gullabi/zeemap"
+keywords:
+  - astronomy
+  - white dwarfs
+  - stellar magnetic fields
+  - spectropolarimetry
+  - Zeeman effect
+  - Bayesian inference

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+.hypothesis/
+.pytest_cache/
+# private data and run outputs never live here (SPEC.md section 7)
+out/
+runs/

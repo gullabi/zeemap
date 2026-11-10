@@ -1,0 +1,24 @@
+# Gate A (docs/GATES.md): tier 1 on every push and pull request, from the lock file on a clean machine.
+name: tier1
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  tier1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86  # v5.4.2
+      - name: Build the environment from the lock file
+        run: |
+          uv venv -p 3.12 .venv
+          uv pip sync --python .venv/bin/python requirements.lock
+          uv pip install --python .venv/bin/python --no-deps -e .
+          .venv/bin/python -c "import zeemap; print(zeemap.__version__)"
+      - name: Tier 1
+        run: tools/check.sh 1

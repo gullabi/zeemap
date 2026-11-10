@@ -1,0 +1,8 @@
+# Lines allowed to contain an absolute-path pattern (V8a): `path:text`, a line of that file containing that text.
+# These files name the patterns themselves.
+tools/scan.py:PATTERNS = [
+tools/scan.py:V8a  absolute paths
+docs/review/lint_plan.py:/home/
+docs/review/lint_plan.py:/Users/
+docs/review/lint_plan.py:/tmp/
+docs/VERIFICATION.md:V8a: no absolute paths

@@ -1,0 +1,46 @@
+# Single-phase fit of the synthetic DA Zeeman toy (tools/zeeman_library.py; not a model atmosphere). All paths are
+# relative: library.path and data.path to $ZEEMAP_DATA, the phase files to data.path. Make the inputs with
+#   .venv/bin/python tools/zeeman_library.py $ZEEMAP_DATA/synth_zeeman
+#   .venv/bin/python tools/zeeman_library.py inject $ZEEMAP_DATA/obs_dah12
+# (truth: Teff 13000 K, centred dipole Bp 12 MG at 40 degrees to the line of sight, S/N 40). Then
+#   zeemap eval examples/synth_single.toml -o <dir>        # evaluates the values below (the truth)
+#   zeemap fit examples/synth_single.toml -o <dir> --seed 1 --starts 40 --workers 4
+# Every key not set here takes its default from src/zeemap/defaults.toml. For the plain chi2 set objective.kind
+# = "chi2".
+
+[library]
+path = "synth_zeeman"
+teffs = [10000.0, 12000.0, 14000.0, 17000.0, 20000.0]
+
+[data]
+path = "obs_dah12"
+windows = [[3850.0, 6750.0]]
+grid = { start = 3800.0, step = 2.0, npix = 1501 }
+
+[[data.phase]]
+phase = 0.0
+file = "ph00.dat"
+ierr = "ph00_ierr.dat"
+vierr = "ph00_vierr.dat"
+
+[model]
+fwhm = 3.0
+ld_mode = 3
+surface = { scheme = "fibonacci", n = 5000 }
+
+[objective]
+kind = "full"
+
+# The values are the truth of the injected observation: md along -z with u = cos(40 deg), so that the dipole axis is
+# at 40 degrees to the observer direction n = (sin i, 0, -cos i) at phase 0.
+[parameters]
+md = { value = [0.0, 0.0, -12.0], step = 1.0, lo = 2.0, hi = 40.0, free = true }
+bq = { value = 0.0, step = 1.0, lo = -20.0, hi = 20.0, free = false }
+aq = { value = [0.0, 0.0, 1.0], step = 0.1, lo = 0.5, hi = 2.0, free = false }
+mo = { value = [0.0, 0.0, 0.0], step = 1.0, lo = 0.0, hi = 20.0, free = false }
+c = { value = [0.0, 0.0, 0.0], step = 0.02, lo = 0.0, hi = 0.3, free = false }
+u = { value = 0.766044443118978, step = 0.1, lo = -1.0, hi = 1.0, free = true }
+teff = { value = 13000.0, step = 500.0, lo = 10000.0, hi = 20000.0, free = true }
+
+[search.starts]
+md = [2.0, 40.0]

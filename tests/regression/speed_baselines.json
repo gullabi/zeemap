@@ -1,0 +1,10 @@
+{
+  "vm | Intel(R) Xeon(R) Processor @ 2.10GHz | 4": {
+    "recorded": "2026-10-18",
+    "python": "3.12.3",
+    "full_single_ms": 17.7968,
+    "full_batch_ms": 4.8175,
+    "chi2_single_ms": 5.6,
+    "chi2_batch_ms": 3.3885
+  }
+}

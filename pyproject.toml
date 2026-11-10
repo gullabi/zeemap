@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "zeemap"
+version = "0.1.0"
+description = "Magnetic field geometries of white dwarfs from phase-resolved spectra and circular polarisation"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+authors = [{ name = "Baybars Külebi" }, { name = "the zeemap contributors" }]
+keywords = ["astronomy", "white dwarfs", "magnetic fields", "spectropolarimetry", "Zeeman effect"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Astronomy",
+]
+dependencies = [
+    "numpy",
+    "scipy",
+    "numba",
+    "emcee",
+]
+
+[project.urls]
+Homepage = "https://github.com/gullabi/zeemap"
+Issues = "https://github.com/gullabi/zeemap/issues"
+Changelog = "https://github.com/gullabi/zeemap/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "hypothesis",
+    "tomli-w",
+]
+
+[project.scripts]
+zeemap = "zeemap.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/zeemap"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers -p no:cacheprovider"
+markers = [
+    "tier1: before every commit (synthetic data only); checks V1-V8 and the tests of V14",
+    "tier2: before merging a change that can move numerical results (real libraries in $ZEEMAP_DATA); checks V10-V13",
+    "tier3: before a release or a paper (days); checks V15-V19",
+    "slow: an end-to-end tier-1 test (a whole fit) that `tools/check.sh 1 --fast` leaves out; extra to the tier marker",
+]

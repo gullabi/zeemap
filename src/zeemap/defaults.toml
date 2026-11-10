@@ -1,0 +1,307 @@
+# zeemap configuration defaults (docs/FORMATS.md section 3; SPEC.md CFG-1 to CFG-3).
+# This file is the only place where defaults are written. A configuration file is merged over it; a key that is not
+# in this file is an error (CFG-2).
+#
+# Conventions of this file (read by src/zeemap/config.py):
+# - The text value "REQUIRED" marks a key without a default: the configuration must set it.
+# - An array of tables ([[data.phase]], [[data.weight]], [[systematics.swap]]) holds ONE template entry here: it gives
+#   the defaults of every entry the configuration writes, and is not itself an entry (no entries = empty list).
+# - The table [parameters."*"] is the template of every entry of [parameters]; the names allowed are listed in
+#   config.py (PARAMETER_NAMES: the names of FORMATS.md section 3).
+# - The text "" means "none" for optional paths.
+
+[library]
+# library directory, relative to $ZEEMAP_DATA (absolute allowed in a user's configuration)
+path = "REQUIRED"
+# Teff slices to load (K): "all" or a list of temperatures
+teffs = "all"
+# what a patch with B outside the library gets: "clamp" or "reject" (LIB-5)
+outside = "clamp"
+
+[data]
+# data directory, relative to $ZEEMAP_DATA (absolute allowed in a user's configuration)
+path = "REQUIRED"
+# fit windows in A: list of [lo, hi] or [lo, hi, weight]
+windows = "REQUIRED"
+# excluded ranges in A: list of [lo, hi] or [lo, hi, "I"/"VI"]
+exclude = []
+# factor applied to the observed V/I and its error when the data are read (the default systematics swaps use 0.9, 1.1)
+vi_scale = 1.0
+
+[data.grid]
+# first wavelength of the regular data grid, A
+start = "REQUIRED"
+# grid step, A
+step = "REQUIRED"
+# number of grid points
+npix = "REQUIRED"
+
+[data.errors]
+# error files hold absolute errors (true) or errors relative to I (false) (DATA-2)
+absolute = true
+# floor of the I error (DATA-2)
+floor_I = 1e-6
+# floor of the V/I error (DATA-2)
+floor_VI = 1e-5
+# derive the V/I error from the I error even where a V/I error file is given (DATA-2)
+derive_VI = false
+
+# Template of one [[data.phase]] block (one block per phase; at least one is required).
+[[data.phase]]
+# rotation phase of this spectrum
+phase = "REQUIRED"
+# spectrum file (wavelength, I, V/I), relative to data.path
+file = "REQUIRED"
+# I error file, relative to data.path
+ierr = "REQUIRED"
+# V/I error file, relative to data.path; "" = none (derived from the I error, DATA-2)
+vierr = ""
+# fit I of this phase (DATA-1)
+use_I = true
+# fit V/I of this phase (DATA-1)
+use_VI = true
+# free constant added to the I continuum, for data whose zero point of I is not known
+i_offset = true
+
+# Template of one [[data.weight]] block: an extra weight (DATA-4): the errors divided by sqrt(w); w = 0 removes pixels.
+[[data.weight]]
+# Stokes quantity: "I" or "VI" (one block per quantity)
+stokes = "REQUIRED"
+# lower wavelength of the weighted range, A
+lo = "REQUIRED"
+# upper wavelength of the weighted range, A
+hi = "REQUIRED"
+# phases the weight applies to: "all" or a list of phase values (as in [[data.phase]] phase)
+phases = "all"
+# the weight
+w = "REQUIRED"
+
+[model]
+# field model: "dqo", "dqo_aligned", ...
+field = "dqo"
+# interpolation in B: "linear" or "pchip" (FWD-15)
+interp_b = "linear"
+# Teff interpolation between two slices (LIB-3, DESIGN.md section 5c): "planck" (continuum-matched per-pixel weights,
+# exact for a fixed shape times the Planck function; decision #26) or "log" (linear in ln Teff, the rule before)
+interp_teff = "planck"
+# limb-darkening law: 0, 1 or 3
+ld_mode = 3
+# instrumental FWHM, A
+fwhm = "REQUIRED"
+# added to all phases, rotations
+phase_offset = 0.0
+# unit of the shift parameter (FWD-13): "kms" (a velocity, proportional to wavelength) or "A" (a constant)
+shift_unit = "kms"
+# a free shift: records at this many shift values over the parameter's [lo, hi], cubic Lagrange weights between them
+shift_nodes = 5
+
+# Patch grid for the search: {scheme = "fibonacci", n}.
+[model.surface]
+# "fibonacci"
+scheme = "fibonacci"
+# number of Fibonacci patches
+n = 5000
+
+[objective]
+# likelihood: "full" or "chi2"
+kind = "full"
+# unknown noise scale per spectrum
+scale = true
+# fit the noise kernel per spectrum once per run and freeze it (LIKE-2, decision #22); false: the initial kernel
+# (corr, disc) or the [[objective.kernel]] entries are used throughout
+kernel_fit = true
+
+# Short correlated noise; the configuration may write `corr = false` to switch it off.
+[objective.corr]
+# correlation length, A
+rho = 4.0
+# jitter
+jitter = 0.05
+
+# Discrepancy term (research values; D6); the configuration may write `disc = false` to switch it off.
+[objective.disc]
+# amplitude for I
+a_I = 0.71
+# correlation length for I, A
+rho_I = 85.0
+# amplitude for V/I
+a_VI = 0.42
+# correlation length for V/I, A
+rho_VI = 205.0
+
+# Legendre series P_0 ... P_degree times the model I; the configuration may write `continuum = false`.
+[objective.continuum]
+# highest Legendre degree
+degree = 3
+
+# Template of one [[objective.kernel]] block: a given kernel for one spectrum (for example copied from an earlier
+# run.json), used when kernel_fit = false; spectra without a block use corr and disc.
+[[objective.kernel]]
+# spectrum label as in run.json, e.g. "ph0.250_I"
+spectrum = "REQUIRED"
+# short Matern-3/2 length, A
+rho_short = "REQUIRED"
+# amplitude of the long term relative to the short one
+a = "REQUIRED"
+# long Matern-3/2 length, A
+rho_long = "REQUIRED"
+# white part
+j = "REQUIRED"
+
+# Template of one entry of [parameters]: name = {value, step, free, lo, hi}. Vector parameters (md, mo, aq, c) take a
+# list of 3 numbers as value, and lo, hi bound the vector's length.
+[parameters."*"]
+# starting or fixed value (number, or 3 numbers for a vector)
+value = "REQUIRED"
+# step (scale of the parameter), > 0
+step = "REQUIRED"
+# searched (true) or fixed (false)
+free = false
+# lower limit (vectors: of the length)
+lo = "REQUIRED"
+# upper limit (vectors: of the length)
+hi = "REQUIRED"
+
+[search]
+# number of starts (research value). FORMATS.md calls it search.starts, which collides with
+# the table [search.starts]; see config.py.
+n_starts = 250
+# number of best starts polished
+top = 10
+# restarts per round
+restarts = 12
+# maximum number of rounds
+rounds_max = 3
+# gain that justifies another round, nats
+round_gain = 5.0
+# band of modes kept, nats
+band = 45.0
+# run the L-BFGS-B stage of a polish (false: the Levenberg-Marquardt finish alone; decision #25)
+lbfgs = true
+# L-BFGS iteration limit
+lbfgs_maxiter = 150
+# central-difference half-step, in units of each parameter's step
+fd_step = 1e-4
+# Levenberg-Marquardt iteration limit (provisional, decision #25: tools/measure_lm_shortfall.py measures the shortfall)
+lm_maxiter = 100
+# absolute stop of the Levenberg-Marquardt finish, nats: it stops (converged) when the undamped Gauss-Newton step at a
+# fresh Jacobian predicts a smaller gain (a small gain of a damped step is no stop); either way it stops when an
+# accepted step gains <= 1e-12 |-ln L|; 0 = off. Decision #37 (provisional until tested on real data; DESIGN.md
+# section 3, "Polish")
+lm_stop_nat = 1e-3
+# the Levenberg-Marquardt finish stops (not converged) after this many rejected steps in a row; 0 = off (it then
+# stops when the damping passes 1e12: 16 rejections in a row from 1e-3). Decision #37 (provisional)
+lm_max_rejections = 5
+# end points per mode re-polished at the error-bar patch count, for the ranking and the value tolerance (SEARCH-8)
+tol_polishes = 5
+
+[search.starts]
+# dipole polar strength range of the starts, [lo, hi] MG
+md = [200.0, 600.0]
+# largest quadrupole strength, MG
+bq = 250.0
+# largest octupole strength, MG
+mo = 200.0
+# largest field-centre offset, stellar radii
+c = 0.25
+# range of cos i, [lo, hi]
+u = [0.03, 1.0]
+# largest brightness-weighted area fraction with B outside the library
+outside_max = 0.05
+# extra acceptance rules (list)
+rules = []
+
+# Fingerprint thresholds that group search end points into modes (DESIGN.md section 3, step 3; read by search.py).
+# Defaults: decision #16 (DECISIONS.md): B thresholds relative to B50 with small absolute floors, Teff in the
+# fingerprint, the angle chosen by the number of phases.
+[search.fingerprint]
+# angle threshold, degrees (the inclination folded to 0-90, or beta)
+incl = 8.0
+# the angle in the fingerprint: "auto" (beta for one phase, the inclination otherwise), "incl" or "beta" (the angle
+# between the dipole axis md and the observer direction at the reference phase, 0-180 degrees, with the centre compared
+# in the frame of md and the observer; one phase determines beta but not the inclination)
+angle = "auto"
+# field centre, stellar radii (length of the difference)
+c = 0.06
+# B50 at the reference phase, MG (with relative = true: the floor of the B50 threshold)
+b50 = 0.5
+# B90 at the reference phase, MG (with relative = true: the floor of the B90 threshold)
+b90 = 1.0
+# rms of B50 over the phases, MG (with relative = true: the floor of the B50-rms threshold)
+b50_rms = 1.0
+# index of the reference phase
+ref_phase = 0
+# true: the B50, B90 and B50-rms thresholds are max(floor above, fraction x the larger B50 at the reference phase)
+relative = true
+# relative = true: B50 threshold as a fraction of the larger B50
+b50_rel = 0.04
+# relative = true: B90 threshold as a fraction of the larger B50
+b90_rel = 0.10
+# relative = true: B50-rms threshold as a fraction of the larger B50
+b50_rms_rel = 0.05
+# thresholds of non-field parameters in the fingerprint, used when the parameter is free (K for teff); a table set in
+# the configuration replaces this one ({} = none)
+extra = {teff = 1000.0}
+
+[search.perturb]
+# relative size of field-strength perturbations
+b_frac = 0.05
+# angle perturbation, degrees
+angle = 8.0
+# field-centre perturbation, stellar radii
+c = 0.04
+# inclination perturbation, degrees
+incl = 4.0
+
+# Families: end points joined by paths along which -ln L stays below a level (SEARCH-9; DESIGN.md section 3b;
+# decision #29; read by families.py).
+[search.family]
+# smallest family level above the best -ln L, nats (h = max(value tolerance, min_level))
+min_level = 5.0
+# most node pairs tested for a link at each level (the grouping is flagged `capped` when this stops it)
+max_pairs = 3000
+# L-BFGS-B iteration limit of the re-polished midpoint of a failed straight link
+mid_iter = 50
+# interior points per straight segment of the link test
+interior = 15
+
+[uncertainty]
+# number of patches for the error bars
+patches = 20000
+# number of ensembles
+ensembles = 4
+# chain length in units of the autocorrelation time
+tau_factor = 50.0
+# evaluation budget per mode run (decision #20); 0 = this default
+max_evals = 600000
+# path of a passed V15 result (its run.json), relative to the configuration file; "" = none
+calibration = ""
+# run the MCMC for the best N modes of the mode table only; 0 = all (`zeemap fit --mcmc-modes N` overrides it)
+modes_max = 0
+# quantities profiled per family (UNC-5): "default" (incl_deg or, with one phase, beta_deg; dipole_MG; c_along_axis;
+# B10_MG, B50_MG, B90_MG at the reference phase search.fingerprint.ref_phase, decision #40; teff_K when free; without
+# those no free parameter moves, e.g. c_along_axis with c fixed) or a list of names (FORMATS.md section 7); [] = no
+# profiles
+profile_quantities = "default"
+# largest number of grid steps per direction of a profile walk (DESIGN.md section 4b)
+profile_max_steps = 40
+# profile the best N families only; 0 = all (decision #40)
+profile_families = 1
+
+# grid steps of the profiles, quantity name -> step (number, or "<p>%" of the family's best value); missing names
+# take the defaults of DESIGN.md section 4b
+[uncertainty.profile_steps]
+
+[systematics]
+# generate the default swaps of decision #21 at run time: Teff fixed at each selected library slice, V/I scaled by
+# 0.9 and 1.1, and one swap per entry of library_alternatives (the jackknife is always made)
+defaults = true
+# other library versions (directories, as library.path) for the default "library_<k>" swaps; [] = none
+library_alternatives = []
+
+# Template of one [[systematics.swap]] block: one swap per block (in addition to the defaults above).
+[[systematics.swap]]
+# name of the swap
+name = "REQUIRED"
+# the keys it changes, as a table of configuration keys, e.g. {model = {ld_mode = 1}}
+set = "REQUIRED"

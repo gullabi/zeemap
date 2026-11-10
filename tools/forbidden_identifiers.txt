@@ -1,0 +1,32 @@
+# Forbidden identifiers (V8c): names of routines from code that must not be copied, one per line, whole words,
+# case-sensitive. Below: common Numerical Recipes routine names.
+mrqmin
+mrqcof
+covsrt
+gaussj
+ludcmp
+lubksb
+svdcmp
+svbksb
+amoeba
+amotry
+gasdev
+ran1
+ran2
+splint
+polint
+frprmn
+dfpmin
+linmin
+mnbrak
+zbrent
+rtbis
+qromb
+trapzd
+four1
+realft
+odeint
+rkqs
+bsstep
+tqli
+tred2

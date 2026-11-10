@@ -1,4 +1,12 @@
 {
+  "mergen | Intel(R) Core(TM) Ultra 7 155U | 14": {
+    "recorded": "2026-11-10",
+    "python": "3.12.3",
+    "full_single_ms": 6.5115,
+    "full_batch_ms": 2.1362,
+    "chi2_single_ms": 2.0211,
+    "chi2_batch_ms": 1.2723
+  },
   "vm | Intel(R) Xeon(R) Processor @ 2.10GHz | 4": {
     "recorded": "2026-10-18",
     "python": "3.12.3",
